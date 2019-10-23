@@ -1,0 +1,274 @@
+<!DOOCTYPE html>
+<html>
+  <head>
+    <title>PULPO</title>
+    <style>
+      html, body { margin: 0; padding: 0; overflow: hidden; }
+    </style>
+  </head>
+  <body>
+        <div id="info">Prototipo de modelado basico<br/>
+            numeros para añadir distintas figuras<br/>
+      
+<script src="js/three.js"></script>
+<script src="js/controls/OrbitControls.js"></script>
+<script src="js/csg.js"></script>
+<script src="js/THREE.CSG.js"></script>
+    <script>
+
+        
+var scene, aspect, camera, camera2, camera3, camera4, renderer, controls;
+var a=8;
+
+		var mapWidth = 500, mapHeight =500;
+	    var mapWidth1 = 500, mapHeight1 =500;
+		var mapWidth2 = 500, mapHeight2 =500;
+        var mapWidth3 = 500, mapHeight3 =500;
+		var w = window.innerWidth, h = window.innerHeight;        
+        
+init();
+animate();
+function init(){
+//INICIALIZACIÓN
+       scene = new THREE.Scene();
+       aspect = window.innerWidth / window.innerHeight;
+       camera = new THREE.PerspectiveCamera( 75, aspect, 0.1, 1000);
+       camera2 = new THREE.PerspectiveCamera( 45, aspect, 0.1, 1000);
+       camera3 = new THREE.PerspectiveCamera( 45, aspect, 0.1, 1000);
+       camera4 = new THREE.PerspectiveCamera( 45, aspect, 0.1, 1000);
+    
+       renderer = new THREE.WebGLRenderer();
+       renderer.setSize( window.innerWidth, window.innerHeight );
+       document.body.appendChild( renderer.domElement );
+controls = new THREE.OrbitControls( camera, renderer.domElement );
+
+//ELEMENTOS COMUNES
+var size = 10;
+var arrowSize = 1;
+var divisions = size;
+var origin = new THREE.Vector3( 0, 0, 0 );
+var x = new THREE.Vector3( 1, 0, 0 );
+var y = new THREE.Vector3( 0, 1, 0 );
+var z = new THREE.Vector3( 0, 0, 1 );
+var color = new THREE.Color( 0x333333 );
+var colorR = new THREE.Color( 0xAA3333 );
+var colorG = new THREE.Color( 0x33AA33 );
+var colorB = new THREE.Color( 0x333366 );
+
+  //CREAR LAS GRILLAS PARA EL ESCENARIO
+var axesHelper = new THREE.AxesHelper( size );
+scene.add( axesHelper );
+
+var gridHelperXZ = new THREE.GridHelper( size, divisions, color, color );
+scene.add( gridHelperXZ );
+           
+            //ROTARLAS PARA QUE QUEDEN EN EL ESPACIO ADECUADO
+gridHelperXZ.rotateOnWorldAxis ( y, THREE.Math.degToRad(90) );
+
+            //CREAR ILUMINACIÓN
+var ambient = new THREE.AmbientLight( 0xffffff, 2 );
+scene.add( ambient );
+
+var pointLight = new THREE.PointLight( 0xffffff, 1, 100 );
+pointLight.position.set( -5, -2, 5 );
+scene.add( pointLight );
+
+var pointLight = new THREE.PointLight( 0xffffff, .5, 100 );
+pointLight.position.set( 5, -2, -5 );
+scene.add( pointLight );
+
+//CREAR LAS GEOMETRÍAS
+    
+var boxGeometry = new THREE.BoxGeometry( 1, 1, 1 );
+var sphereGeometry = new THREE.SphereGeometry( .6, 32, 32 );   
+var geocilindro = new THREE.CylinderGeometry( .3, .3, 2, 32 );
+    
+    
+
+//CREAR LOS MATERIALES
+var material1 = new THREE.MeshStandardMaterial( { color: colorR, metalness: 0.5, roughness: 0.1 } );
+var material2 = new THREE.MeshStandardMaterial( { color: colorG, metalness: 0.5, roughness: 0.1 } );
+
+//CREAR LAS MALLAS
+var cube = new THREE.Mesh( boxGeometry );
+var sphere = new THREE.Mesh( sphereGeometry );
+var cilindro = new THREE.Mesh( geocilindro  );
+
+       
+
+//CONVERTIR A CSG
+var boxCSG = THREE.CSG.fromMesh( cube );
+var sphereCSG = THREE.CSG.fromMesh( sphere );
+var cilindroCSG = THREE.CSG.fromMesh( cilindro );
+
+//APLICAR LAS OPERACIONES
+if(a==8){
+   var result = boxCSG.intersect( sphereCSG );
+   }
+
+if(a==9){
+   var result = boxCSG.union( sphereCSG );
+   }
+
+if(a==10){
+   var result = boxCSG.subtract( sphereCSG );
+   }
+   
+if(a==11){
+   var result = boxCSG.intersect( sphereCSG );
+   }
+   
+if(a==12){
+   var result = boxCSG.intersect( sphereCSG );
+   }
+    
+    
+    
+//ACTIVAR PARA VER: ESFERA MENOS CAJA
+
+
+
+
+//var result = sphereCSG.subtract( boxCSG ); //ACTIVAR PARA VER: ESFERA MENOS CAJA
+
+//CONVERTIR A THREE
+
+ 
+    
+ if(a>7){
+    
+cube = THREE.CSG.toMesh( result );
+cube.material = material1; 
+    
+   }   
+    
+    
+sphere.material = material2;
+cilindro.material=material2;
+
+
+
+
+
+//AGREGAR A LA ESCENA LOS DIFERENTES ELEMENTOS
+
+if(a==1){
+   scene.add( sphere );
+   }
+    
+if(a==2){
+  scene.add( cube );
+   }
+
+if(a==3){
+  scene.add( cilindro );
+   }
+
+if(a==4){
+    scene.add( sphere );
+    scene.add( cube );
+   } 
+    
+if(a==5){
+    scene.add( cilindro );
+    scene.add( cube );
+   }
+
+     
+if(a==6){
+  
+    scene.add( sphere );
+    scene.add( cilindro );
+   }
+
+
+if(a==7){
+    scene.add( sphere );
+    scene.add( cilindro );
+    scene.add( cube );
+   }    
+    
+    
+    
+    
+if(a>7){
+    scene.add( cube );
+   }
+    
+
+
+camera.position.x = 2;
+camera.position.y = 2;
+camera.position.z = 5;
+camera.lookAt( origin );
+    
+    
+camera2.position.x =7;
+camera2.position.y =15;	 
+camera2.position.z =7;
+camera2.lookAt( origin );
+        
+            
+            
+camera3.position.x =15;
+camera3.position.y =20;	 
+camera3.position.z =15;
+camera3.lookAt( origin );
+            
+       
+            		    
+camera4.position.x =15;
+camera4.position.y =0;	 
+camera4.position.z =15;
+camera4.lookAt( origin );    
+    
+    
+}
+function animate(){
+requestAnimationFrame( animate );
+controls.update();
+render();
+}
+function render(){
+		renderer.setViewport( 0, 0, window.innerWidth , window.innerHeight/2 );
+        renderer.setScissor( 0, 0, window.innerWidth , window.innerHeight/2 );
+		camera.lookAt(0,0,0);
+		renderer.setScissorTest( true );
+		renderer.setClearColor( new THREE.Color( 0, 0, 0 ));
+		renderer.render( scene, camera );
+		
+        
+        
+       
+        renderer.setViewport( 0, 250 , window.innerWidth , window.innerHeight);
+        renderer.setScissor( window.innerWidth/3, window.innerHeight/2, 2*window.innerWidth/3 , window.innerHeight );
+        camera2.lookAt(0,0,0);
+		renderer.setScissorTest( true );
+		renderer.setClearColor( new THREE.Color( 0, 0.75, 0.75 ));
+		renderer.render( scene, camera2 );
+        
+        
+        
+        
+        
+        renderer.setViewport( -650, 250 , window.innerWidth, window.innerHeight	);
+        renderer.setScissor( 0, window.innerHeight/2, window.innerWidth/3 , window.innerHeight );
+        camera3.lookAt(0,0,0);
+		renderer.setScissorTest( true );
+		renderer.setClearColor( new THREE.Color( 0.25, 0, 0.25 ));
+		renderer.render( scene, camera3 );
+        
+        
+        
+        
+		renderer.setViewport( 650, 250 , window.innerWidth , window.innerHeight );
+        renderer.setScissor( 2*window.innerWidth/3, window.innerHeight/2, 3*window.innerWidth/3 , window.innerHeight );
+        camera4.lookAt(0,0,0);
+		renderer.setScissorTest( true );
+		renderer.setClearColor( new THREE.Color( 0.5, 0.5, 0 ));
+		renderer.render( scene, camera4 );	
+         
+}
+    </script>
+  </body>
+</html>
