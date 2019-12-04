@@ -1,0 +1,581 @@
+<!DOOCTYPE html>
+<html>
+  <head>
+    <title>Proyecto</title>
+    <style>
+      html, body { margin: 0; padding: 0; overflow: hidden; }
+    </style>
+  </head>
+  <body>
+        <div id="info">Prototipo 2 de modelado basico<br/>
+            numeros para añadir distintas figuras<br/>
+      
+<script src="js/three.js"></script>
+<script src="js/controls/OrbitControls.js"></script>
+<script src="js/csg.js"></script>
+<script src="js/THREE.CSG.js"></script>
+    <script>
+
+        
+var scene, aspect, camera, camera2, camera3, camera4, renderer, controls;
+var a=62;
+
+		var mapWidth = 500, mapHeight =500;
+	    var mapWidth1 = 500, mapHeight1 =500;
+		var mapWidth2 = 500, mapHeight2 =500;
+        var mapWidth3 = 500, mapHeight3 =500;
+		var w = window.innerWidth, h = window.innerHeight;        
+        
+init();
+animate();
+function init(){
+//INICIALIZACIÓN
+       scene = new THREE.Scene();
+       aspect = window.innerWidth / window.innerHeight;
+       camera = new THREE.PerspectiveCamera( 75, aspect, 0.1, 1000);
+       camera2 = new THREE.PerspectiveCamera( 45, aspect, 0.1, 1000);
+       camera3 = new THREE.PerspectiveCamera( 45, aspect, 0.1, 1000);
+       camera4 = new THREE.PerspectiveCamera( 45, aspect, 0.1, 1000);
+    
+       renderer = new THREE.WebGLRenderer();
+       renderer.setSize( window.innerWidth, window.innerHeight );
+       document.body.appendChild( renderer.domElement );
+controls = new THREE.OrbitControls( camera, renderer.domElement );
+
+//ELEMENTOS COMUNES
+var size = 10;
+var arrowSize = 1;
+var divisions = size;
+var origin = new THREE.Vector3( 0, 0, 0 );
+var x = new THREE.Vector3( 1, 0, 0 );
+var y = new THREE.Vector3( 0, 1, 0 );
+var z = new THREE.Vector3( 0, 0, 1 );
+var color = new THREE.Color( 0x333333 );
+var colorR = new THREE.Color( 0xAA3333 );
+var colorG = new THREE.Color( 0x33AA33 );
+var colorB = new THREE.Color( 0x333366 );
+
+  //CREAR LAS GRILLAS PARA EL ESCENARIO
+var axesHelper = new THREE.AxesHelper( size );
+scene.add( axesHelper );
+
+var gridHelperXZ = new THREE.GridHelper( size, divisions, color, color );
+scene.add( gridHelperXZ );
+           
+            //ROTARLAS PARA QUE QUEDEN EN EL ESPACIO ADECUADO
+gridHelperXZ.rotateOnWorldAxis ( y, THREE.Math.degToRad(90) );
+
+            //CREAR ILUMINACIÓN
+var ambient = new THREE.AmbientLight( 0xffffff, 2 );
+scene.add( ambient );
+
+var pointLight = new THREE.PointLight( 0xffffff, 1, 100 );
+pointLight.position.set( -5, -2, 5 );
+scene.add( pointLight );
+
+var pointLight = new THREE.PointLight( 0xffffff, .5, 100 );
+pointLight.position.set( 5, -2, -5 );
+scene.add( pointLight );
+
+//CREAR LAS GEOMETRÍAS
+    
+var boxGeometry = new THREE.BoxGeometry( 1, 1, 1 );
+var sphereGeometry = new THREE.SphereGeometry( .6, 32, 32 );   
+var geocilindro = new THREE.CylinderGeometry( .3, .3, 2, 32 );
+    
+    
+
+//CREAR LOS MATERIALES
+var material1 = new THREE.MeshStandardMaterial( { color: colorR, metalness: 0.5, roughness: 0.1 } );
+var material2 = new THREE.MeshStandardMaterial( { color: colorG, metalness: 0.5, roughness: 0.1 } );
+
+//CREAR LAS MALLAS
+var cube = new THREE.Mesh( boxGeometry );
+var cube2 = new THREE.Mesh( boxGeometry );
+var cube3 = new THREE.Mesh( boxGeometry );
+var cube4 = new THREE.Mesh( boxGeometry );
+var cube5 = new THREE.Mesh( boxGeometry );
+    
+    
+    
+    
+var sphere = new THREE.Mesh( sphereGeometry );
+var sphere2 = new THREE.Mesh( sphereGeometry );
+var sphere3 = new THREE.Mesh( sphereGeometry );
+var sphere4 = new THREE.Mesh( sphereGeometry );
+var sphere5 = new THREE.Mesh( sphereGeometry );
+
+
+
+var cilindro = new THREE.Mesh( geocilindro  );
+var cilindro2 = new THREE.Mesh( geocilindro  );
+var cilindro3 = new THREE.Mesh( geocilindro  );
+var cilindro4 = new THREE.Mesh( geocilindro  );
+var cilindro5 = new THREE.Mesh( geocilindro  );
+    
+    
+    
+    
+    
+cube.material = material2;
+cube2.material = material2; 
+cube3.material = material2; 
+cube4.material = material2; 
+cube5.material = material2; 
+    
+sphere.material = material2;
+sphere2.material = material2;
+sphere3.material = material2;
+sphere4.material = material2;
+sphere5.material = material2;
+    
+cilindro.material= material2;
+cilindro2.material= material2;
+cilindro3.material= material2;
+cilindro4.material= material2;
+cilindro5.material= material2;
+    
+    
+ ///EDICION POSICIONES 
+    
+
+cube2.position.y = 1; 
+cube3.position.y = -1; 
+cube4.position.x = 1; 
+cube5.position.x = -1; 
+    
+sphere2.position.y = 1; 
+sphere3.position.y = -1; 
+sphere4.position.x = 1; 
+sphere5.position.x = -1; 
+
+cilindro2.position.y = 1; 
+cilindro3.position.y = -1; 
+cilindro4.position.x = 1; 
+cilindro5.position.x = -1;     
+    
+
+//CONVERTIR A CSG
+var boxCSG = THREE.CSG.fromMesh( cube );
+var box2CSG = THREE.CSG.fromMesh( cube2 );
+var box3CSG = THREE.CSG.fromMesh( cube3 );
+var box4CSG = THREE.CSG.fromMesh( cube4 );
+var box5CSG = THREE.CSG.fromMesh( cube5 );
+    
+    
+    
+var sphereCSG = THREE.CSG.fromMesh( sphere );
+var sphere2CSG = THREE.CSG.fromMesh( sphere2 );
+var sphere3CSG = THREE.CSG.fromMesh( sphere3 );
+var sphere4CSG = THREE.CSG.fromMesh( sphere4 );
+var sphere5CSG = THREE.CSG.fromMesh( sphere5 );
+    
+    
+    
+var cilindroCSG = THREE.CSG.fromMesh( cilindro );
+var cilindro2CSG = THREE.CSG.fromMesh( cilindro2 );
+var cilindro3CSG = THREE.CSG.fromMesh( cilindro3 );
+var cilindro4CSG = THREE.CSG.fromMesh( cilindro4 );
+var cilindro5CSG = THREE.CSG.fromMesh( cilindro5 );
+    
+    
+
+
+
+//APLICAR LAS OPERACIONES
+    
+if(a==1){
+   var result = boxCSG.intersect( sphereCSG );
+}
+
+if(a==2){
+   var result = box2CSG.intersect( sphere2CSG );
+    }
+if(a==3){
+  var result = box3CSG.intersect( sphere3CSG );
+}
+    
+if(a==4){
+   var result = box4CSG.intersect( sphere4CSG );
+}
+
+if(a==5){
+   var result = box5CSG.intersect( sphere5CSG );
+}
+ 
+    
+    
+    
+if(a==6){
+   var result = boxCSG.union( sphereCSG );
+ }
+
+if(a==7){
+   var result = box2CSG.union( sphere2CSG );
+ }
+
+if(a==8){
+   var result = box3CSG.union( sphere3CSG );
+ }
+    
+if(a==9){
+   var result = box4CSG.union( sphere4CSG );
+ }
+    
+if(a==10){
+   var result = box5CSG.union( sphere5CSG );
+ }
+    
+
+    
+    
+    
+if(a==11){
+   var result = boxCSG.subtract( sphereCSG );
+ }
+ 
+if(a==12){
+   var result = box2CSG.subtract( sphere2CSG );
+ }
+if(a==13){
+   var result = box3CSG.subtract( sphere3CSG );
+ }
+if(a==14){
+   var result = box4CSG.subtract( sphere4CSG );
+ }
+if(a==15){
+   var result = box5CSG.subtract( sphere5CSG );
+ }
+
+    
+
+    
+    
+if(a==16){
+    var result = boxCSG.intersect( sphereCSG );
+ }
+   
+ if(a==17){
+    var result = box2CSG.intersect( sphere2CSG );
+ }
+    
+if(a==18){
+    var result = box3CSG.intersect( sphere3CSG );
+ }
+    
+if(a==19){
+    var result = box4CSG.intersect( sphere4CSG );
+ }
+if(a==20){
+    var result = box5CSG.intersect( sphere5CSG );
+ }
+
+   
+////-----------------------------------------------------------------    
+////-----------------------------------------------------------------    
+////-----------------------------------------------------------------
+if(a==21){
+   var result = boxCSG.intersect( cilindroCSG );
+}
+
+if(a==22){
+   var result = box2CSG.intersect( cilindro2CSG );
+    }
+if(a==23){
+  var result = box3CSG.intersect( cilindro3CSG );
+}
+    
+if(a==24){
+   var result = box4CSG.intersect( cilindro4CSG );
+}
+
+if(a==25){
+   var result = box5CSG.intersect( cilindro5CSG );
+}
+ 
+    
+    
+    
+if(a==26){
+   var result = boxCSG.union( cilindroCSG );
+ }
+
+if(a==27){
+   var result = box2CSG.union( cilindro2CSG );
+ }
+if(a==28){
+   var result = box3CSG.union( cilindro3CSG );
+ }
+    
+if(a==29){
+   var result = box4CSG.union( cilindro4CSG );
+ }
+    
+if(a==30){
+   var result = box5CSG.union( cilindro5CSG );
+ }
+    
+
+    
+    
+    
+if(a==31){
+   var result = boxCSG.subtract( cilindroCSG );
+ }
+ 
+if(a==32){
+   var result = box2CSG.subtract( cilindro2CSG );
+ }
+if(a==33){
+   var result = box3CSG.subtract( cilindro3CSG );
+ }
+if(a==34){
+   var result = box4CSG.subtract( cilindro4CSG );
+ }
+if(a==35){
+   var result = box5CSG.subtract( cilindro5CSG );
+ }
+
+    
+
+    
+    
+if(a==36){
+    var result = boxCSG.intersect( cilindroCSG );
+ }
+   
+ if(a==37){
+    var result = box2CSG.intersect( cilindro2CSG );
+ }
+    
+if(a==38){
+    var result = box3CSG.intersect( cilindro3CSG );
+ }
+    
+if(a==39){
+    var result = box4CSG.intersect( cilindro4CSG );
+ }
+if(a==40){
+    var result = box5CSG.intersect( cilindro5CSG );
+ }
+
+////-----------------------------------------------------------------   
+////-----------------------------------------------------------------    
+////-----------------------------------------------------------------    
+    
+if(a==41){
+   var result = sphereCSG.intersect( cilindroCSG );
+}
+
+if(a==42){
+   var result = sphere2CSG.intersect( cilindro2CSG );
+    }
+if(a==43){
+  var result = sphere3CSG.intersect( cilindro3CSG );
+}
+    
+if(a==44){
+   var result = sphere4CSG.intersect( cilindro4CSG);
+}
+
+if(a==45){
+   var result = sphere5CSG.intersect( cilindro5CSG );
+}
+ 
+    
+    
+    
+if(a==46){
+   var result = sphereCSG.union( cilindroCSG );
+ }
+
+if(a==47){
+   var result = sphere2CSG.union( cilindro2CSG );
+ }
+if(a==48){
+   var result = sphere3CSG.union( cilindro3CSG );
+ }
+    
+if(a==49){
+   var result = sphere4CSG.union( cilindro4CSG);
+ }
+    
+if(a==50){
+   var result = sphere5CSG.union( cilindro5CSG );
+ }
+    
+
+    
+    
+    
+if(a==51){
+   var result = sphereCSG.subtract( cilindroCSG );
+ }
+ 
+if(a==52){
+   var result = sphere2CSG.subtract( cilindro2CSG );
+ }
+if(a==53){
+   var result = sphere3CSG.subtract( cilindro3CSG );
+ }
+if(a==54){
+   var result = sphere4CSG.subtract( cilindro4CSG );
+ }
+if(a==55){
+   var result = sphere5CSG.subtract( cilindro5CSG );
+ }
+
+    
+
+    
+    
+if(a==56){
+    var result = sphereCSG.intersect( cilindroCSG );
+ }
+   
+ if(a==57){
+    var result = sphere2CSG.intersect( cilindro2CSG );
+ }
+    
+if(a==58){
+    var result = sphere3CSG.intersect( cilindro3CSG );
+ }
+    
+if(a==59){
+    var result = sphere4CSG.intersect( cilindro4CSG );
+ }
+if(a==60){
+    var result = sphere5CSG.intersect( cilindro5CSG );
+ }
+
+    
+///------------------------------------------------------------------    
+////-----------------------------------------------------------------    
+////-----------------------------------------------------------------   
+if(a==61){
+    var result = sphere2CSG.intersect( cilindro2CSG );
+    var result2 = box2CSG.intersect( cilindro2CSG );
+ }
+
+if(a==62){
+    var result = sphere5CSG.intersect( cilindro5CSG );
+    var result2 = box4CSG.intersect( cilindro4CSG );
+ }
+
+
+if(a==63){
+    var result = sphereCSG.intersect( cilindroCSG );
+    var result2 = sphere4CSG.intersect( cilindro4CSG );
+ }
+
+
+
+if(a==64){
+    var result = box4CSG.subtract( cilindro4CSG );
+    var result2 = sphere4CSG.intersect( cilindro4CSG );
+ }
+
+
+///------------------------------------------------------------------    
+////-----------------------------------------------------------------    
+////-----------------------------------------------------------------
+ 
+if(a<61){    
+cubes = THREE.CSG.toMesh( result );
+cubes.material = material1; 
+scene.add(cubes);
+}
+    
+else{    
+cubes1 = THREE.CSG.toMesh( result );
+cubes2 = THREE.CSG.toMesh( result2 );
+cubes1.material = material1;
+cubes2.material2 = material1; 
+scene.add(cubes1);
+scene.add(cubes2);
+}
+    
+//AGREGAR A LA ESCENA LOS DIFERENTES ELEMENTOS
+
+
+ 
+    
+
+    
+
+
+camera.position.x = 2;
+camera.position.y = 2;
+camera.position.z = 5;
+camera.lookAt( origin );
+    
+    
+camera2.position.x =7;
+camera2.position.y =15;	 
+camera2.position.z =7;
+camera2.lookAt( origin );
+        
+            
+            
+camera3.position.x =15;
+camera3.position.y =20;	 
+camera3.position.z =15;
+camera3.lookAt( origin );
+            
+       
+            		    
+camera4.position.x =15;
+camera4.position.y =0;	 
+camera4.position.z =15;
+camera4.lookAt( origin );    
+    
+    
+}
+function animate(){
+requestAnimationFrame( animate );
+controls.update();
+render();
+}
+function render(){
+		renderer.setViewport( 0, 0, window.innerWidth/2 , window.innerHeight/2 );
+        renderer.setScissor( 0, 0, window.innerWidth/2 , window.innerHeight/2 );
+		camera.lookAt(0,0,0);
+		renderer.setScissorTest( true );
+		renderer.setClearColor( new THREE.Color( 0, 0, 0 ));
+		renderer.render( scene, camera );
+		
+        
+        
+       
+        renderer.setViewport( 0, 250 , window.innerWidth , window.innerHeight);
+        renderer.setScissor( window.innerWidth/3, window.innerHeight/2, 2*window.innerWidth/3 , window.innerHeight );
+        camera2.lookAt(0,0,0);
+		renderer.setScissorTest( true );
+		renderer.setClearColor( new THREE.Color( 0.25, 0.25, 0.75 ));
+		renderer.render( scene, camera2 );
+        
+        
+        
+        
+        
+        renderer.setViewport( -650, 250 , window.innerWidth, window.innerHeight	);
+        renderer.setScissor( 0, window.innerHeight/2, window.innerWidth/3 , window.innerHeight );
+        camera3.lookAt(0,0,0);
+		renderer.setScissorTest( true );
+		renderer.setClearColor( new THREE.Color( 0.25, 0, 0.25 ));
+		renderer.render( scene, camera3 );
+        
+        
+        
+        
+		renderer.setViewport( 650, 250 , window.innerWidth , window.innerHeight );
+        renderer.setScissor( 2*window.innerWidth/3, window.innerHeight/2, 3*window.innerWidth/3 , window.innerHeight );
+        camera4.lookAt(0,0,0);
+		renderer.setScissorTest( true );
+		renderer.setClearColor( new THREE.Color( 0, 0.5, 0 ));
+		renderer.render( scene, camera4 );	
+         
+}
+    </script>
+  </body>
+</html>
